@@ -1,48 +1,59 @@
-#include <Servo.h>
+#include <Servo.h> //includes the servo library
+Servo myservo1;
 
-const int trigPin = 10;
-const int echoPin = 11;
-long duration;
-int distance;
- 
-Servo myServo;
-void setup() {
-  // put your setup code here, to run once:
-myServo.attach(12);
-pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-Serial.begin(9600);
+#define echopin 2 // echo pin
+#define trigpin 3 // Trigger pin
 
+long ultra_time;
+long dis_cm;
+int set_cm = 16;
+
+int Stop =5;
+
+void setup(){ // put your setup code here, to run once
+
+Serial.begin(9600);// initialize serial communication at 9600 bits per second:
+
+myservo1.attach(4);
+myservo1.write(90);
+
+pinMode (trigpin, OUTPUT); // declare ultrasonic sensor Trigger pin as Output
+pinMode (echopin, INPUT);  // declare ultrasonic sensor Echo pin as input
+
+delay(1000); // Waiting for a while
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-distance = calculateDistance();
+void loop(){ 
+//*************************
+ultra_read();
+//*************************
 
-  
-myServo.write(0);
-if ( distance < 5)
-{ myServo.attach(12);
-myServo.write(160);
-delay(500);
-myServo.write(0);
-delay(1000);
+Serial.print("Dis :");Serial.println(dis_cm); 
 
+if(dis_cm<set_cm && Stop==0){ Stop = 5;
+myservo1.write(20);
+delay(500); 
+myservo1.write(90);
+delay(200); 
+myservo1.write(20);
+delay(1000); 
+myservo1.write(90);
 }
-else{
-  myServo.detach();
+
+if(dis_cm>set_cm){
+if(Stop>0){Stop = Stop-1;}
+myservo1.write(90);
 }
-Serial.println(distance);
+
+delay(100); 
 }
-int calculateDistance(){ 
-  
-  digitalWrite(trigPin, LOW); 
-  delayMicroseconds(5);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trigPin, HIGH); 
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
-  distance= duration*0.034/2;
-  return distance;
+
+//**********************ultra_read****************************
+void ultra_read(){
+digitalWrite(trigpin, LOW);
+delayMicroseconds(2);
+digitalWrite(trigpin, HIGH);
+delayMicroseconds(10);
+ultra_time = pulseIn (echopin, HIGH);
+dis_cm =  ultra_time / 29 / 2; 
 }
