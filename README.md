@@ -10,7 +10,9 @@ int set_cm = 16;
 
 int Stop =5;
 
-void setup(){ // put your setup code here, to run once
+void setup()
+
+{ // put your setup code here, to run once
 
 Serial.begin(9600);// initialize serial communication at 9600 bits per second:
 
@@ -30,7 +32,9 @@ ultra_read();
 
 Serial.print("Dis :");Serial.println(dis_cm); 
 
-if(dis_cm<set_cm && Stop==0){ Stop = 5;
+if(dis_cm<set_cm && Stop==0)
+
+{ Stop = 5;
 myservo1.write(20);
 delay(500); 
 myservo1.write(90);
@@ -40,7 +44,9 @@ delay(1000);
 myservo1.write(90);
 }
 
-if(dis_cm>set_cm){
+if(dis_cm>set_cm)
+
+{
 if(Stop>0){Stop = Stop-1;}
 myservo1.write(90);
 }
@@ -49,7 +55,8 @@ delay(100);
 }
 
 //**********************ultra_read****************************
-void ultra_read(){
+void ultra_read()
+{
 digitalWrite(trigpin, LOW);
 delayMicroseconds(2);
 digitalWrite(trigpin, HIGH);
